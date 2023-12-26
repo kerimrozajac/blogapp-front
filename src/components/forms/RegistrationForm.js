@@ -64,34 +64,9 @@ function RegistrationForm() {
       validated={validated}
       onSubmit={handleSubmit}
     >
-      {/* Form fields go here */}
-      <Form.Group className="mb-3">
-        <Form.Label>First Name</Form.Label>
-        <Form.Control
-          value={form.first_name}
-          onChange={(e) => setForm({ ...form, first_name: e.target.value })}
-          required
-          type="text"
-          placeholder="Enter first name"
-        />
-        <Form.Control.Feedback type="invalid">
-          This field is required.
-        </Form.Control.Feedback>
-      </Form.Group>
 
-      <Form.Group className="mb-3">
-        <Form.Label>Last name</Form.Label>
-        <Form.Control
-          value={form.last_name}
-          onChange={(e) => setForm({ ...form, last_name: e.target.value })}
-          required
-          type="text"
-          placeholder="Enter last name"
-        />
-        <Form.Control.Feedback type="invalid">
-          This field is required.
-        </Form.Control.Feedback>
-      </Form.Group>
+    
+      {/* Form fields go here */}
 
       <Form.Group className="mb-3">
         <Form.Label>Username</Form.Label>

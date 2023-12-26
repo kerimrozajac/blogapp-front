@@ -10,8 +10,8 @@ function Login() {
           <div className="content text-center px-4">
             <h1 className="text-primary">Welcome!</h1>
             <p className="content">
-              Login now and start enjoying! <br />
-              Or if you don't have an account, please{" "}
+              Login now! <br />
+              If you don't have an account, please{" "}
               <Link to="/register/">register</Link>.
             </p>
           </div>
