@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
-import axiosService from "../../helpers/axios";
-import { getUser } from "../../hooks/user.actions";
-import Toaster from "../Toaster";
+import axiosService from "../helpers/axios";
+import useUserActions from "../hooks/user.actions";
+import Toaster from "./Toaster";
 
 function CreatePost() {
   const [show, setShow] = useState(false);
@@ -10,6 +10,7 @@ function CreatePost() {
   const handleShow = () => setShow(true);
   const [validated, setValidated] = useState(false);
   const [form, setForm] = useState({});
+  const { getUser } = useUserActions();
   const user = getUser();
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");

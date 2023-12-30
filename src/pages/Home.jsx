@@ -15,7 +15,7 @@ function Home() {
   const { getUser } = useUserActions();
   const user = getUser();
 
-  const posts = useSWR("/post/", fetcher, {
+  const posts = useSWR("api/v1/", fetcher, {
     refreshInterval: 10000,
   });
 

@@ -6,7 +6,7 @@ import { randomAvatar } from "../utils";
 import axiosService, { fetcher } from "../helpers/axios";
 import { Link } from "react-router-dom";
 import useUserActions from "../hooks/user.actions";
-import { getUser } from "../hooks/user.actions"; 
+// import { getUser } from "../hooks/user.actions"; 
 import Toaster from "./Toaster";
 
 const MoreToggleIcon = React.forwardRef(({ onClick }, ref) => (
@@ -31,7 +31,7 @@ function Post(props) {
 
   const handleLikeClick = (action) => {
     axiosService
-      .post(`/post/${post.id}/${action}/`)
+      .post(`/${post.id}/${action}/`)
       .then(() => {
         refresh();
       })
