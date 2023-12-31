@@ -7,6 +7,7 @@ import useUserActions from "../hooks/user.actions";
 import { Post } from "../components/posts";
 import CreatePost from "../components/posts/CreatePost";
 import ProfileCard from "../components/profile/ProfileCard";
+import { randomAvatar } from "../utils";
 
 function Home() {
   const posts = useSWR("/api/v1/", fetcher, {
@@ -17,9 +18,9 @@ function Home() {
   const { getUser } = useUserActions();
   const user = getUser();
 
-//  if (!user) {
-//    return <div>Loading!</div>;
-//  }
+  if (!user) {
+    return <div>Loading!</div>;
+  }
 
   return (
     <Layout>
@@ -28,7 +29,8 @@ function Home() {
           <Row className="border rounded  align-items-center">
             <Col className="flex-shrink-1">
               <Image
-                src={user.avatar}
+                //src={user.avatar}
+                src={randomAvatar()}
                 roundedCircle
                 width={52}
                 height={52}

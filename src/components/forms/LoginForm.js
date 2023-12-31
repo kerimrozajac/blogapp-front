@@ -30,7 +30,7 @@ function LoginForm() {
       await login(data); // Use the login function from the hook
 
       // If login is successful, you can navigate to the desired page
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       if (err.response && err.response.data) {
         setError(err.response.data);
