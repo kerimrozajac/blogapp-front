@@ -1,23 +1,21 @@
 import React from "react";
 import Layout from "../components/Layout";
 import { Row, Col, Image } from "react-bootstrap";
-import { randomAvatar } from "../utils";
 import useSWR from "swr";
 import { fetcher } from "../helpers/axios";
 import useUserActions from "../hooks/user.actions";
-import CreatePost from "../components/CreatePost";
-import Post from "../components/Post";
-import { format } from "timeago.js"; 
-import { LikeFilled, CommentOutlined, LikeOutlined, MoreOutlined } from "@ant-design/icons";
-
+import { Post } from "../components/posts";
+import CreatePost from "../components/posts/CreatePost";
+import ProfileCard from "../components/profile/ProfileCard";
 
 function Home() {
+  const posts = useSWR("/api/v1/", fetcher, {
+    refreshInterval: 20000,
+  });
+  const profiles = useSWR("/api/v1/users/?limit=5", fetcher);
+
   const { getUser } = useUserActions();
   const user = getUser();
-
-  const posts = useSWR("api/v1/", fetcher, {
-    refreshInterval: 10000,
-  });
 
 //  if (!user) {
 //    return <div>Loading!</div>;
@@ -27,10 +25,10 @@ function Home() {
     <Layout>
       <Row className="justify-content-evenly">
         <Col sm={7}>
-          <Row className="border rounded align-items-center">
+          <Row className="border rounded  align-items-center">
             <Col className="flex-shrink-1">
               <Image
-                src={randomAvatar()}
+                src={user.avatar}
                 roundedCircle
                 width={52}
                 height={52}
@@ -38,14 +36,23 @@ function Home() {
               />
             </Col>
             <Col sm={10} className="flex-grow-1">
-              <CreatePost />
+              <CreatePost refresh={posts.mutate} />
             </Col>
           </Row>
           <Row className="my-4">
-            {posts.data?.results.map((post) => (
-              <Post key={post.id} post={post} refresh={posts.mutate} />
+            {posts.data?.results.map((post, index) => (
+              <Post key={index} post={post} refresh={posts.mutate} />
             ))}
           </Row>
+        </Col>
+        <Col sm={3} className="border rounded py-4 h-50">
+          <h4 className="font-weight-bold text-center">Suggested people</h4>
+          <div className="d-flex flex-column">
+            {profiles.data &&
+              profiles.data.results.map((profile, index) => (
+                <ProfileCard key={index} user={profile} />
+              ))}
+          </div>
         </Col>
       </Row>
     </Layout>

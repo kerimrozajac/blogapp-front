@@ -23,9 +23,33 @@ function useUserActions() {
 
   // Register the user
   function register(data) {
-    // Implement the registration logic
-    // ...
+    return axios.post(`${baseURL}/auth/register/`, data).then((res) => {
+      // Registering the account and tokens in the store
+      setUserData(res.data);
+      navigate("/");
+    });
   }
+
+    // Edit the user
+    function edit(data, userId) {
+      return axios
+        .patch(`${baseURL}/users/${userId}/`, data, {
+          headers: {
+            "content-type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          // Registering the account in the store
+          localStorage.setItem(
+            "auth",
+            JSON.stringify({
+              access: getAccessToken(),
+              refresh: getRefreshToken(),
+              user: res.data,
+            })
+          );
+        });
+    }
 
   // Logout the user
   function logout() {

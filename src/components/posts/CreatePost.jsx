@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
-import axiosService from "../helpers/axios";
-import useUserActions from "../hooks/user.actions";
-import Toaster from "./Toaster";
+import axiosService from "../../helpers/axios";
+import useUserActions from "../../hooks/user.actions";
+import Toaster from "../Toaster";
 
 function CreatePost() {
   const [show, setShow] = useState(false);
