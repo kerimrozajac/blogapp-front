@@ -3,24 +3,26 @@ import Layout from "../components/Layout";
 import { Row, Col, Image } from "react-bootstrap";
 import useSWR from "swr";
 import { fetcher } from "../helpers/axios";
-import useUserActions from "../hooks/user.actions";
+//import useUserActions from "../hooks/user.actions";
+import { getUser } from "../hooks/user.actions";
 import { Post } from "../components/posts";
 import CreatePost from "../components/posts/CreatePost";
 import ProfileCard from "../components/profile/ProfileCard";
 import { randomAvatar } from "../utils";
 
 function Home() {
-  const posts = useSWR("/api/v1/", fetcher, {
+  const posts = useSWR("/", fetcher, {
     refreshInterval: 20000,
   });
-  const profiles = useSWR("/api/v1/users/?limit=5", fetcher);
+  const profiles = useSWR("/users/?limit=5", fetcher);
 
-  const { getUser } = useUserActions();
+  //const { getUser } = useUserActions();
   const user = getUser();
+  
 
-  if (!user) {
-    return <div>Loading!</div>;
-  }
+//  if (!user) {
+//    return <div>Loading!</div>;
+//  }
 
   return (
     <Layout>
@@ -28,14 +30,13 @@ function Home() {
         <Col sm={7}>
           <Row className="border rounded  align-items-center">
             <Col className="flex-shrink-1">
-              <Image
-                //src={user.avatar}
-                src={randomAvatar()}
-                roundedCircle
-                width={52}
-                height={52}
-                className="my-2"
-              />
+            <Image
+              src={user ? user.avatar : randomAvatar()}
+              roundedCircle
+              width={52}
+              height={52}
+              className="my-2"
+            />
             </Col>
             <Col sm={10} className="flex-grow-1">
               <CreatePost refresh={posts.mutate} />

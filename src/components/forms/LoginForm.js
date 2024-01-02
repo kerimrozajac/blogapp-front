@@ -1,72 +1,69 @@
-// src/forms/loginform.js
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import useUserActions from "../../hooks/user.actions";
+
+import { useUserActions } from "../../hooks/user.actions";
 
 function LoginForm() {
-  const navigate = useNavigate();
   const [validated, setValidated] = useState(false);
-  const [form, setForm] = useState({ username: "", password: "" });
+  const [form, setForm] = useState({
+    username: "",
+    password: "",
+  });
   const [error, setError] = useState(null);
+  const userActions = useUserActions();
 
-  const { login } = useUserActions(); // Retrieve the login function from the hook
-
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const loginForm = event.currentTarget;
+
     if (loginForm.checkValidity() === false) {
       event.stopPropagation();
     }
 
     setValidated(true);
 
-    try {
-      const data = {
-        username: form.username,
-        password: form.password,
-      };
+    const data = {
+      username: form.username,
+      password: form.password,
+    };
 
-      await login(data); // Use the login function from the hook
-
-      // If login is successful, you can navigate to the desired page
-      navigate("/home");
-    } catch (err) {
-      if (err.response && err.response.data) {
-        setError(err.response.data);
-      } else {
-        setError("An error occurred while processing your request.");
+    userActions.login(data).catch((err) => {
+      if (err.message) {
+        setError(err.request.response);
       }
-    }
+    });
   };
 
   return (
     <Form
-      id="login-form"
+      id="registration-form"
       className="border p-4 rounded"
       noValidate
       validated={validated}
       onSubmit={handleSubmit}
+      data-testid="login-form"
     >
-        <Form.Group className="mb-3">
+      <Form.Group className="mb-3">
         <Form.Label>Username</Form.Label>
         <Form.Control
           value={form.username}
+          data-testid="username-field"
           onChange={(e) => setForm({ ...form, username: e.target.value })}
           required
           type="text"
           placeholder="Enter username"
         />
         <Form.Control.Feedback type="invalid">
-          Username is required.
+          This file is required.
         </Form.Control.Feedback>
-    </Form.Group>
+      </Form.Group>
 
       <Form.Group className="mb-3">
         <Form.Label>Password</Form.Label>
         <Form.Control
           value={form.password}
-          minLength={8}
+          data-testid="password-field"
+          minLength="8"
           onChange={(e) => setForm({ ...form, password: e.target.value })}
           required
           type="password"
@@ -75,13 +72,15 @@ function LoginForm() {
         <Form.Control.Feedback type="invalid">
           Please provide a valid password.
         </Form.Control.Feedback>
-        </Form.Group>
+      </Form.Group>
 
-      <div className="text-content text-danger">
-        {error && <p>{error}</p>}
-      </div>
+      <div className="text-content text-danger">{error && <p>{error}</p>}</div>
 
-      <Button variant="primary" type="submit">
+      <Button
+        disabled={!form.password || !form.username}
+        variant="primary"
+        type="submit"
+      >
         Submit
       </Button>
     </Form>
