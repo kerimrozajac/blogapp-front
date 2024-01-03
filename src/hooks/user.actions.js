@@ -18,8 +18,11 @@ function useUserActions() {
   function login(data) {
     return axios.post(`${baseURL}/auth/login/`, data).then((res) => {
       // Registering the account and tokens in the store
-      setUserData(res.data);
-      navigate("/");
+      //const authToken = res.data.key;
+
+      // Set the authorization header for future requests
+      axiosService.defaults.headers.common['Authorization'] = `Token ${res.data.key}`;
+      navigate("/home/");
     });
   }
 
