@@ -18,11 +18,8 @@ function useUserActions() {
   function login(data) {
     return axios.post(`${baseURL}/auth/login/`, data).then((res) => {
       // Registering the account and tokens in the store
-      //const authToken = res.data.key;
-
-      // Set the authorization header for future requests
-      axiosService.defaults.headers.common['Authorization'] = `Token ${res.data.key}`;
-      navigate("/home/");
+      setUserData(res.data);
+      navigate("/");
     });
   }
 
@@ -83,9 +80,12 @@ function useUserActions() {
 
 // Get the user
 function getUser() {
-  const auth =
-    JSON.parse(localStorage.getItem("auth"));
-  return auth.user;
+  const auth = JSON.parse(localStorage.getItem("auth")) || null;
+  if (auth) {
+    return auth.user;
+  } else {
+    return null;
+  }
 }
 
 
