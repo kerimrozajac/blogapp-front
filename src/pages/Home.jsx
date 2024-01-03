@@ -11,6 +11,7 @@ import ProfileCard from "../components/profile/ProfileCard";
 import { randomAvatar } from "../utils";
 import axios from "axios";
 import { useState, useEffect } from 'react';
+import { useUserActions } from "../hooks/user.actions";
 
 function Home() {
   //const posts = useSWR("/", fetcher, {
@@ -18,7 +19,14 @@ function Home() {
   //});
   //const profiles = useSWR("/users/?limit=5", fetcher);
 
-  const user = getUser();
+  const [error, setError] = useState(null);
+  const userActions = useUserActions();
+
+  const user = userActions.fetchUser().catch((err) => {
+    if (err.message) {
+      setError(err.request.response);
+    }
+  });
 
 
 
