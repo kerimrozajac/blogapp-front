@@ -14,10 +14,10 @@ import { useState, useEffect } from 'react';
 import { useUserActions } from "../hooks/user.actions";
 
 function Home() {
-  //const posts = useSWR("/", fetcher, {
-  //  refreshInterval: 20000,
-  //});
-  //const profiles = useSWR("/users/?limit=5", fetcher);
+  const posts = useSWR("/", fetcher, {
+    refreshInterval: 20000,
+  });
+  const profiles = useSWR("/users/?limit=5", fetcher);
 
   const [error, setError] = useState(null);
   const userActions = useUserActions();
@@ -34,7 +34,7 @@ function Home() {
     return <div>Loading!</div>;
   }
 
-
+/*
   if (user) {
     return (
       <Layout>
@@ -42,46 +42,34 @@ function Home() {
       </Layout>
     );
   }
+*/
 
-/*
-  return (
-    <Layout>
-      <Row className="justify-content-evenly">
-        <Col sm={7}>
-          <Row className="border rounded  align-items-center">
-            <Col className="flex-shrink-1">
+
+return (
+  <Layout>
+    <Row className="justify-content-evenly">
+      <Col sm={7}>
+        <Row className="border rounded  align-items-center">
+          <Col className="flex-shrink-1">
             <Image
-              src={user ? user.avatar : randomAvatar()}
+              src={user.avatar}
               roundedCircle
               width={52}
               height={52}
               className="my-2"
             />
-            </Col>
-            <Col sm={10} className="flex-grow-1">
-              <CreatePost refresh={posts.mutate} />
-            </Col>
-          </Row>
-          <Row className="my-4">
-            {posts.data?.results.map((post, index) => (
-              <Post key={index} post={post} refresh={posts.mutate} />
-            ))}
-          </Row>
-        </Col>
-        <Col sm={3} className="border rounded py-4 h-50">
-          <h4 className="font-weight-bold text-center">Suggested people</h4>
-          <div className="d-flex flex-column">
-            {profiles.data &&
-              profiles.data.results.map((profile, index) => (
-                <ProfileCard key={index} user={profile} />
-              ))}
-          </div>
-        </Col>
-      </Row>
-    </Layout>
-  );
-  */
-
+          </Col>
+          <Col sm={10} className="flex-grow-1">
+            <CreatePost refresh={posts.mutate} />
+          </Col>
+        </Row>
+      </Col>
+      <Col sm={3} className="border rounded py-4 h-50">
+        
+      </Col>
+    </Row>
+  </Layout>
+);
 }
 
 export default Home;
