@@ -16,13 +16,12 @@ function Home() {
   });
   const profiles = useSWR("/users/?limit=5", fetcher);
 
-  //const { getUser } = useUserActions();
   const user = getUser();
   
 
-//  if (!user) {
-//    return <div>Loading!</div>;
-//  }
+  if (!user) {
+    return <div>Loading!</div>;
+  }
 
   return (
     <Layout>

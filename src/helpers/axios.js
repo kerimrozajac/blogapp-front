@@ -22,6 +22,7 @@ axiosService.interceptors.request.use(async (config) => {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
 
+/*
   // CSRF token 
   const getCSRFToken = () => {
     const csrfTokenCookie = document.cookie
@@ -37,6 +38,7 @@ axiosService.interceptors.request.use(async (config) => {
   if (csrfToken) {
     config.headers["X-CSRFToken"] = csrfToken;
   }
+*/
 
   return config;
 
