@@ -9,20 +9,33 @@ import { Post } from "../components/posts";
 import CreatePost from "../components/posts/CreatePost";
 import ProfileCard from "../components/profile/ProfileCard";
 import { randomAvatar } from "../utils";
+import axios from "axios";
+import { useState, useEffect } from 'react';
 
 function Home() {
-  const posts = useSWR("/", fetcher, {
-    refreshInterval: 20000,
-  });
-  const profiles = useSWR("/users/?limit=5", fetcher);
+  //const posts = useSWR("/", fetcher, {
+  //  refreshInterval: 20000,
+  //});
+  //const profiles = useSWR("/users/?limit=5", fetcher);
 
   const user = getUser();
-  
+
+
 
   if (!user) {
     return <div>Loading!</div>;
   }
 
+
+  if (user) {
+    return (
+      <Layout>
+        <div>{user.username}</div>
+      </Layout>
+    );
+  }
+
+/*
   return (
     <Layout>
       <Row className="justify-content-evenly">
@@ -59,6 +72,8 @@ function Home() {
       </Row>
     </Layout>
   );
+  */
+
 }
 
 export default Home;

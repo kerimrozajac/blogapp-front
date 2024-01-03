@@ -1,9 +1,9 @@
 import axios from "axios";
-import createAuthRefreshInterceptor from "axios-auth-refresh";
+//import createAuthRefreshInterceptor from "axios-auth-refresh";
 import {
-  getAccessToken,
-  getRefreshToken,
-  getUser,
+  //getAccessToken,
+  //getRefreshToken,
+  //getUser,
 } from "../hooks/user.actions";
 
 const axiosService = axios.create({
@@ -13,16 +13,17 @@ const axiosService = axios.create({
   },
 });
 
+/*
 axiosService.interceptors.request.use(async (config) => {
-  /**
-   * Retrieving the access and refresh tokens from the local storage
-   */
+
+  //Retrieving the access and refresh tokens from the local storage
+
   const accessToken = getAccessToken();
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
 
-/*
+
   // CSRF token 
   const getCSRFToken = () => {
     const csrfTokenCookie = document.cookie
@@ -38,17 +39,19 @@ axiosService.interceptors.request.use(async (config) => {
   if (csrfToken) {
     config.headers["X-CSRFToken"] = csrfToken;
   }
-*/
+
 
   return config;
 
 });
+*/
 
 axiosService.interceptors.response.use(
   (res) => Promise.resolve(res),
   (err) => Promise.reject(err)
 );
 
+/**
 const refreshAuthLogic = async (failedRequest) => {
   return axios
     .post(
@@ -75,6 +78,7 @@ const refreshAuthLogic = async (failedRequest) => {
 };
 
 createAuthRefreshInterceptor(axiosService, refreshAuthLogic);
+**/
 
 export function fetcher(url) {
   return axiosService.get(url).then((res) => res.data);
