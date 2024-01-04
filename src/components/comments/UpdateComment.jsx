@@ -1,15 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useState, useContext } from "react";
 import { Button, Modal, Form, Dropdown } from "react-bootstrap";
 import axiosService from "../../helpers/axios";
+
 import { Context } from "../Layout";
 
-function UpdatePost(props) {
-  const { post, refresh } = props;
+function UpdateComment(props) {
+  const { postId, comment, refresh } = props;
   const [show, setShow] = useState(false);
   const [validated, setValidated] = useState(false);
   const [form, setForm] = useState({
-    author: post.author.id,
-    body: post.body,
+    author: comment.author.id,
+    body: comment.body,
+    post: postId,
   });
 
   const { setToaster } = useContext(Context);
@@ -19,9 +21,9 @@ function UpdatePost(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const updatePostForm = event.currentTarget;
+    const updateCommentForm = event.currentTarget;
 
-    if (updatePostForm.checkValidity() === false) {
+    if (updateCommentForm.checkValidity() === false) {
       event.stopPropagation();
     }
 
@@ -30,15 +32,16 @@ function UpdatePost(props) {
     const data = {
       author: form.author,
       body: form.body,
+      post: postId,
     };
 
     axiosService
-      .put(`/${post.id}/`, data)
+      .put(`/post/${postId}/comment/${comment.id}/`, data)
       .then(() => {
         handleClose();
         setToaster({
           type: "success",
-          message: "Post updated 🚀",
+          message: "Comment updated 🚀",
           show: true,
           title: "Success!",
         });
@@ -49,7 +52,7 @@ function UpdatePost(props) {
           type: "danger",
           message: "An error occurred.",
           show: true,
-          title: "Post Error",
+          title: "Comment Error",
         });
       });
   };
@@ -66,16 +69,16 @@ function UpdatePost(props) {
         </Modal.Header>
         <Modal.Body className="border-0">
           <Form
+            data-testid="update-comment-test"
             noValidate
             validated={validated}
             onSubmit={handleSubmit}
-            data-testid="update-post-form"
           >
             <Form.Group className="mb-3">
               <Form.Control
                 name="body"
                 value={form.body}
-                data-testid="post-body-field"
+                data-testid="comment-body-field"
                 onChange={(e) => setForm({ ...form, body: e.target.value })}
                 as="textarea"
                 rows={3}
@@ -85,7 +88,7 @@ function UpdatePost(props) {
         </Modal.Body>
         <Modal.Footer>
           <Button
-            data-testid="update-post-submit"
+            data-testid="update-comment-submit"
             variant="primary"
             onClick={handleSubmit}
           >
@@ -97,4 +100,4 @@ function UpdatePost(props) {
   );
 }
 
-export default UpdatePost;
+export default UpdateComment;

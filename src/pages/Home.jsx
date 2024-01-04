@@ -5,71 +5,80 @@ import useSWR from "swr";
 import { fetcher } from "../helpers/axios";
 //import useUserActions from "../hooks/user.actions";
 import { getUser } from "../hooks/user.actions";
-import { Post } from "../components/posts";
+import Post from "../components/posts/Post";
 import CreatePost from "../components/posts/CreatePost";
 import ProfileCard from "../components/profile/ProfileCard";
 import { randomAvatar } from "../utils";
 import axios from "axios";
 import { useState, useEffect } from 'react';
 import { useUserActions } from "../hooks/user.actions";
+import axiosService from "../helpers/axios";
 
 function Home() {
-  const posts = useSWR("/", fetcher, {
+
+  // Token iz local storagea u header
+  const retrievedToken = localStorage.getItem('authToken');
+  axiosService.defaults.headers.common['Authorization'] = `Token ${retrievedToken}`;
+
+  // pozivanje liste postova
+  const { data: posts, mutate: mutatePosts } = useSWR("/", fetcher, {
     refreshInterval: 20000,
   });
+
+  // pozivanje profila
   const profiles = useSWR("/users/?limit=5", fetcher);
 
+
+
+  //definisanje userActions
   const [error, setError] = useState(null);
   const userActions = useUserActions();
 
+  // pozivanje usera
   const user = userActions.fetchUser().catch((err) => {
     if (err.message) {
       setError(err.request.response);
     }
   });
+  
+
+  //const user = getUser();
+  console.log('User Object:', user);
 
 
 
-  if (!user) {
+
+  if (!user || !posts) {
     return <div>Loading!</div>;
   }
 
-/*
-  if (user) {
-    return (
-      <Layout>
-        <div>{user.username}</div>
-      </Layout>
-    );
-  }
-*/
 
 
-return (
-  <Layout>
-    <Row className="justify-content-evenly">
-      <Col sm={7}>
-        <Row className="border rounded  align-items-center">
-          <Col className="flex-shrink-1">
-            <Image
-              src={user.avatar}
-              roundedCircle
-              width={52}
-              height={52}
-              className="my-2"
-            />
-          </Col>
-          <Col sm={10} className="flex-grow-1">
-            <CreatePost refresh={posts.mutate} />
-          </Col>
-        </Row>
-      </Col>
-      <Col sm={3} className="border rounded py-4 h-50">
-        
-      </Col>
-    </Row>
-  </Layout>
-);
+  return (
+    <Layout>
+      <Row className="justify-content-evenly">
+        <Col sm={7}>
+          {/* Create Post Component */}
+          <CreatePost refresh={mutatePosts} />
+
+          {/* Display Posts */}
+          {posts.results && posts.results.length > 0 ? (
+            posts.results.map((post) => (
+              <Post key={post.public_id} post={post} refresh={mutatePosts} />
+            ))
+          ) : (
+            <div>No posts available</div>
+          )}
+        </Col>
+        <Col sm={3} className="border rounded py-4 h-50">
+          {/* Display profiles */}
+          {/* Add your logic to display profiles here */}
+        </Col>
+      </Row>
+    </Layout>
+  );
 }
+
+
 
 export default Home;
