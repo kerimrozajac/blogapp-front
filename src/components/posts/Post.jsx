@@ -20,6 +20,7 @@ function Post(props) {
   const retrievedToken = localStorage.getItem('authToken');
   axiosService.defaults.headers.common['Authorization'] = `Token ${retrievedToken}`;
 
+  const ismir="test"
 
   const user = getUser();
   console.log('User Object:', user);
