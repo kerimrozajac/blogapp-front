@@ -64,15 +64,20 @@ function useUserActions() {
   }
 
 
-  // Logout the user
+// Logout the user
   function logout() {
+  // Clear the authorization header for future requests
+    delete axiosService.defaults.headers.common['Authorization'];
+
     return axiosService
       .post(`${baseURL}/auth/logout/`, /*{ refresh: getRefreshToken() }*/)
       .then(() => {
-        localStorage.removeItem("auth");
+        // Remove the authorization token from local storage
+        localStorage.removeItem("authToken");
         navigate("/login");
       });
-  }
+}
+
 
   // Fetch the user
   function fetchUser() {

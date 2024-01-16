@@ -16,9 +16,12 @@ import axiosService from "../helpers/axios";
 
 function Home() {
 
-  // Token iz local storagea u header
-  const retrievedToken = localStorage.getItem('authToken');
-  axiosService.defaults.headers.common['Authorization'] = `Token ${retrievedToken}`;
+  // Ukoliko vec nema authorizacijski token, uzima Token iz local storagea i stavlja u header
+  if(!axiosService.defaults.headers.common['Authorization'])
+  {
+    const retrievedToken = localStorage.getItem('authToken');
+    axiosService.defaults.headers.common['Authorization'] = `Token ${retrievedToken}`;
+  }
 
   // pozivanje liste postova
   const { data: posts, mutate: mutatePosts } = useSWR("/", fetcher, {
@@ -43,7 +46,7 @@ function Home() {
   
 
   //const user = getUser();
-  console.log('User Object:', user);
+  //console.log('User Object:', user);
 
 
 

@@ -16,14 +16,29 @@ function Post(props) {
   const { post, refresh, isSinglePost } = props;
   const { setToaster } = useContext(Context);
 
-  // Token iz local storagea u header
-  const retrievedToken = localStorage.getItem('authToken');
-  axiosService.defaults.headers.common['Authorization'] = `Token ${retrievedToken}`;
+  // Ukoliko vec nema authorizacijski token, uzima Token iz local storagea i stavlja u header
+  if(!axiosService.defaults.headers.common['Authorization'])
+  {
+    const retrievedToken = localStorage.getItem('authToken');
+    axiosService.defaults.headers.common['Authorization'] = `Token ${retrievedToken}`;
+  }
 
-  const ismir="test"
+  //definisanje userActions
+  const [error, setError] = useState(null);
+  const userActions = useUserActions();
 
-  const user = getUser();
-  console.log('User Object:', user);
+
+  //const user = getUser();
+
+  // pozivanje usera
+  const user = userActions.fetchUser().catch((err) => {
+    if (err.message) {
+      setError(err.request.response);
+    }
+  });
+
+
+  //console.log('User Object:', user);
 
   const handleLikeClick = (action) => {
     axiosService
