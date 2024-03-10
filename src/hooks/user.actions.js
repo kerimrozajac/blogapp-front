@@ -10,9 +10,7 @@ function useUserActions() {
   return {
     login,
     register,
-    logout,
-    edit,
-    fetchUser,
+    logout
   };
 
   // Login the user
@@ -20,17 +18,18 @@ function useUserActions() {
     return axios.post(`${baseURL}/auth/login/`, data).then((res) => {
       
       // Registering the account and tokens in the store
-      const authToken = res.data.key;
-      localStorage.setItem('authToken', authToken);
-
-
-      // Set the authorization header for future requests
-      axiosService.defaults.headers.common['Authorization'] = `Token ${authToken}`;
-
+      setUserData(data)
       navigate("/home/");
 
     });
   }
+
+  // Logout the user
+  function logout() {
+    localStorage.removeItem("auth");
+    navigate("/login");
+  }
+
 
 
   // Register the user
@@ -62,22 +61,11 @@ function useUserActions() {
           })
         );
       });
-  }
+    }
 
 
-// Logout the user
-  function logout() {
-  // Clear the authorization header for future requests
-    delete axiosService.defaults.headers.common['Authorization'];
 
-    return axiosService
-      .post(`${baseURL}/auth/logout/`, /*{ refresh: getRefreshToken() }*/)
-      .then(() => {
-        // Remove the authorization token from local storage
-        localStorage.removeItem("authToken");
-        navigate("/login");
-      });
-}
+
 
 
   // Fetch the user
@@ -89,7 +77,7 @@ function useUserActions() {
   });
 }
 
-}
+
 
 
 // Get the user
@@ -116,11 +104,13 @@ function setUserData(data) {
   localStorage.setItem(
     "auth",
     JSON.stringify({
-      user: data,
+      authtoken: res.data.key,
+      user: res.data.user,
     })
   );
 }
 
+}
 
 
 export {
@@ -129,3 +119,4 @@ export {
   getAccessToken,
   setUserData,
 };
+
