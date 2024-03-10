@@ -16,42 +16,14 @@ import axiosService from "../helpers/axios";
 
 function Home() {
 
-  // Ukoliko vec nema authorizacijski token, uzima Token iz local storagea i stavlja u header
-  if(!axiosService.defaults.headers.common['Authorization'])
-  {
-    const retrievedToken = localStorage.getItem('authToken');
-    axiosService.defaults.headers.common['Authorization'] = `Token ${retrievedToken}`;
-  }
-
-  // pozivanje liste postova
-  const { data: posts, mutate: mutatePosts } = useSWR("/", fetcher, {
+  const posts = useSWR("/post/", fetcher, {
     refreshInterval: 20000,
   });
+  const profiles = useSWR("/user/?limit=5", fetcher);
 
-  // pozivanje profila
-  const profiles = useSWR("/users/?limit=5", fetcher);
+  const user = getUser();
 
-
-
-  //definisanje userActions
-  const [error, setError] = useState(null);
-  const userActions = useUserActions();
-
-  // pozivanje usera
-  const user = userActions.fetchUser().catch((err) => {
-    if (err.message) {
-      setError(err.request.response);
-    }
-  });
-  
-
-  //const user = getUser();
-  //console.log('User Object:', user);
-
-
-
-
-  if (!user || !posts) {
+  if (!user) {
     return <div>Loading!</div>;
   }
 

@@ -1,48 +1,23 @@
-import React, { useContext, useState } from "react";
-//import { format } from "timeago.js";
-import { randomAvatar } from "../../utils";
+import React, { useContext } from "react";
+import { format } from "timeago.js";
 import { LikeFilled, CommentOutlined, LikeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { Image, Card, Dropdown } from "react-bootstrap";
 import axiosService from "../../helpers/axios";
-import { getUser, useUserActions } from "../../hooks/user.actions";
+import { getUser } from "../../hooks/user.actions";
 import UpdatePost from "./UpdatePost";
 import { Context } from "../Layout";
 import MoreToggleIcon from "../MoreToggleIcon";
 
 function Post(props) {
-
-
   const { post, refresh, isSinglePost } = props;
   const { setToaster } = useContext(Context);
 
-  // Ukoliko vec nema authorizacijski token, uzima Token iz local storagea i stavlja u header
-  if(!axiosService.defaults.headers.common['Authorization'])
-  {
-    const retrievedToken = localStorage.getItem('authToken');
-    axiosService.defaults.headers.common['Authorization'] = `Token ${retrievedToken}`;
-  }
-
-  //definisanje userActions
-  const [error, setError] = useState(null);
-  const userActions = useUserActions();
-
-
-  //const user = getUser();
-
-  // pozivanje usera
-  const user = userActions.fetchUser().catch((err) => {
-    if (err.message) {
-      setError(err.request.response);
-    }
-  });
-
-
-  //console.log('User Object:', user);
+  const user = getUser();
 
   const handleLikeClick = (action) => {
     axiosService
-      .post(`/${post.id}/${action}/`)
+      .post(`/post/${post.id}/${action}/`)
       .then(() => {
         refresh();
       })
@@ -51,7 +26,7 @@ function Post(props) {
 
   const handleDelete = () => {
     axiosService
-      .delete(`/${post.id}/`)
+      .delete(`/post/${post.id}/`)
       .then(() => {
         setToaster({
           type: "warning",
@@ -71,7 +46,6 @@ function Post(props) {
       });
   };
 
-
   return (
     <>
       <Card className="rounded-3 my-4" data-testid="post-test">
@@ -79,20 +53,20 @@ function Post(props) {
           <Card.Title className="d-flex flex-row justify-content-between">
             <div className="d-flex flex-row">
               <Image
-                src={randomAvatar()}
+                src={post.author.avatar}
                 roundedCircle
                 width={48}
                 height={48}
                 className="me-2 border border-primary border-2"
               />
               <div className="d-flex flex-column justify-content-start align-self-center mt-2">
-                <p className="fs-6 m-0">{post.author.username}</p>
+                <p className="fs-6 m-0">{post.author.name}</p>
                 <p className="fs-6 fw-lighter">
-                  <small>{post.created}</small>
+                  <small>{format(post.created)}</small>
                 </p>
               </div>
             </div>
-            {user.username === post.author.username && (
+            {user.name === post.author.name && (
               <div>
                 <Dropdown>
                   <Dropdown.Toggle as={MoreToggleIcon} />
@@ -131,7 +105,7 @@ function Post(props) {
             {!isSinglePost && (
               <p className="ms-1 fs-6">
                 <small>
-                  <Link to={`/${post.id}/`}>
+                  <Link to={`/post/${post.id}/`}>
                     {post.comments_count} comments
                   </Link>
                 </small>

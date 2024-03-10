@@ -10,27 +10,18 @@ function useUserActions() {
   return {
     login,
     register,
-    logout
+    logout,
+    edit,
   };
 
   // Login the user
   function login(data) {
     return axios.post(`${baseURL}/auth/login/`, data).then((res) => {
-      
       // Registering the account and tokens in the store
-      setUserData(data)
-      navigate("/home/");
-
+      setUserData(res.data);
+      navigate("/");
     });
   }
-
-  // Logout the user
-  function logout() {
-    localStorage.removeItem("auth");
-    navigate("/login");
-  }
-
-
 
   // Register the user
   function register(data) {
@@ -41,11 +32,10 @@ function useUserActions() {
     });
   }
 
-
   // Edit the user
   function edit(data, userId) {
     return axiosService
-      .patch(`${baseURL}/users/${userId}/`, data, {
+      .patch(`${baseURL}/user/${userId}/`, data, {
         headers: {
           "content-type": "multipart/form-data",
         },
@@ -56,29 +46,23 @@ function useUserActions() {
           "auth",
           JSON.stringify({
             access: getAccessToken(),
-            //refresh: getRefreshToken(),
+            csrf: getCSRFToken(),
             user: res.data,
           })
         );
       });
-    }
+  }
 
-
-
-
-
-
-  // Fetch the user
-  function fetchUser() {
-  return axiosService
-  .get(`${baseURL}/auth/user/`)
-  .then((userRes) => {
-    setUserData(userRes);
-  });
+  // Logout the user
+  function logout() {
+    return axiosService
+      .post(`${baseURL}/auth/logout/`, { csrf: getCSRFToken() })
+      .then(() => {
+        localStorage.removeItem("auth");
+        navigate("/login");
+      });
+  }
 }
-
-
-
 
 // Get the user
 function getUser() {
@@ -90,33 +74,34 @@ function getUser() {
   }
 }
 
-
-
 // Get the access token
 function getAccessToken() {
   const auth = JSON.parse(localStorage.getItem("auth"));
   return auth.access;
 }
 
+// Get the refresh token
+function getCSRFToken() {
+  const auth = JSON.parse(localStorage.getItem("auth"));
+  return auth.csrf;
+}
 
 // Set the access, token and user property
 function setUserData(data) {
   localStorage.setItem(
     "auth",
     JSON.stringify({
-      authtoken: res.data.key,
-      user: res.data.user,
+      access: data.access,
+      refresh: data.refresh,
+      user: data.user,
     })
   );
 }
-
-}
-
 
 export {
   useUserActions,
   getUser,
   getAccessToken,
+  getCSRFToken,
   setUserData,
 };
-
