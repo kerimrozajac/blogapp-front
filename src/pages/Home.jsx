@@ -46,7 +46,7 @@ function Home() {
   
 
   //const user = getUser();
-  //console.log('User Object:', user);
+  console.log('User Object:', user);
 
 
 

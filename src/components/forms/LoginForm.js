@@ -33,25 +33,6 @@ function LoginForm() {
         setError(err.request.response);
       }
     });
-    
-
-  /*
-  // Login the user
-  const login = async  () => {
-    try {
-      const response = await axios.post('http://your-api-url/api/v1/auth/login/', form);
-      const authToken = response.data.key;
-
-      // Save the token in localStorage (or sessionStorage)
-      localStorage.setItem('authToken', authToken);
-
-      // Redirect to the home page
-      history.push('/home');
-    } catch (error) {
-      console.error('Login failed', error);
-    }
-  }
-  */
 
   };
 
